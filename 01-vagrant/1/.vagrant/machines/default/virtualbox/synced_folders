@@ -1,1 +1,0 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/lesya/myhometasks/devops-hometasks/01-vagrant/1","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
