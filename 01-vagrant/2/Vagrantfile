@@ -1,25 +1,29 @@
 Vagrant.configure("2") do |config|
-    # Конфигурация для машины с статическим сайтом
-    config.vm.define "static" do |static|
-      static.vm.box = "ubuntu/bionic64"
-      static.vm.network "private_network", ip: "192.168.56.11"
-      static.vm.provision "shell", inline: <<-SHELL
-        sudo apt-get update
-        sudo apt-get install -y apache2
-        sudo wget -O /var/www/html/index.html https://raw.githubusercontent.com/Fenikks/devops-files-23.08/master/02-tools/files/index.html
-        sudo systemctl restart apache2
-      SHELL
-    end
-  
-    # Конфигурация для машины с динамическим сайтом
-    config.vm.define "dynamic" do |dynamic|
-      dynamic.vm.box = "ubuntu/bionic64"
-      dynamic.vm.network "private_network", ip: "192.168.56.12"
-      dynamic.vm.provision "shell", inline: <<-SHELL
-        sudo apt-get update
-        sudo apt-get install -y apache2 php
-        sudo wget -O /var/www/html/index.php https://raw.githubusercontent.com/Fenikks/devops-files-23.08/master/02-tools/files/index.php
-        sudo systemctl restart apache2
-      SHELL
-    end
-  end  
+  # Конфигурация для машины с статическим сайтом
+  config.vm.define "static" do |static|
+    static.vm.box = "ubuntu/bionic64"
+    static.vm.network "private_network", ip: "192.168.56.11"
+    static.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get update
+      sudo apt-get install -y apache2
+      sudo wget -O /var/www/html/index.html https://raw.githubusercontent.com/Fenikks/devops-files-23.08/master/02-tools/files/index.html
+      sudo systemctl restart apache2
+    SHELL
+  end
+
+  # Конфигурация для машины с динамическим сайтом
+  config.vm.define "dynamic" do |dynamic|
+    dynamic.vm.box = "ubuntu/bionic64"
+    dynamic.vm.network "private_network", ip: "192.168.56.12"
+    dynamic.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get update
+      sudo apt-get install -y apache2 php libapache2-mod-php
+      sudo wget -O /var/www/html/index.php https://raw.githubusercontent.com/Fenikks/devops-files-23.08/master/02-tools/files/index.php
+      # Активация модуля PHP
+      sudo a2enmod php7.2
+      # Настройка Apache на использование index.php в качестве главной страницы
+      echo "DirectoryIndex index.php" | sudo tee /etc/apache2/mods-enabled/dir.conf
+      sudo systemctl restart apache2
+    SHELL
+  end
+end
