@@ -16,7 +16,6 @@ Vagrant.configure("2") do |config|
     apt-get install -y php libapache2-mod-php
     systemctl restart apache2
 
-    
     echo '<VirtualHost *:80>
             DocumentRoot /var/www/html
           </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
@@ -35,15 +34,8 @@ Vagrant.configure("2") do |config|
 
     mkdir -p /var/www/php
     chown -R www-data:www-data /var/www
-  SHELL
 
-
-  config.vm.provision "file", source: "./01-vagrant/1/index.html", destination: "/home/vagrant/index.html"
-  config.vm.provision "file", source: "./01-vagrant/1/index.php", destination: "/home/vagrant/index.php"
-
-  
-  config.vm.provision "shell", inline: <<-SHELL
-    sudo mv /home/vagrant/index.html /var/www/html/index.html
-    sudo mv /home/vagrant/index.php /var/www/php/index.php
+    sudo wget -O /var/www/html/index.html https://raw.githubusercontent.com/Fenikks/devops-files-23.08/master/02-tools/files/index.html
+    sudo wget -O /var/www/php/index.php https://raw.githubusercontent.com/Fenikks/devops-files-23.08/master/02-tools/files/index.php
   SHELL
 end
