@@ -1,0 +1,51 @@
+---
+- name: Webserver setup
+  hosts: webserver
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Apache and PHP
+      apt:
+        pkg:
+          - apache2
+          - php
+          - libapache2-mod-php
+        state: present
+
+    - name: Copy index.html
+      copy:
+        src: /vagrant/index.html
+        dest: /var/www/html/index.html
+        mode: '0644'
+
+    - name: Copy index.php
+      copy:
+        src: /vagrant/index.php
+        dest: /var/www/html/index.php
+        mode: '0644'
+
+    - name: Setup Virtual Host for Port 81
+      blockinfile:
+        path: /etc/apache2/ports.conf
+        block: |
+          Listen 81
+        marker: "# {mark} ANSIBLE MANAGED BLOCK for port 81"
+
+    - name: Configure Apache2 VirtualHost
+      template:
+        src: /vagrant/vhost.conf.j2
+        dest: /etc/apache2/sites-available/myapp.conf
+
+    - name: Enable new VirtualHost
+      shell: a2ensite myapp && systemctl restart apache2
+
+    - name: Enable PHP module
+      shell: a2enmod php7.3
+
+    - name: Restart Apache2
+      service:
+        name: apache2
+        state: restarted
