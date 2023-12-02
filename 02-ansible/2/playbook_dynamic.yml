@@ -1,0 +1,16 @@
+---
+- hosts: dynamic_site
+  become: yes
+  tasks:
+    - name: Install Apache and PHP
+      apt:
+        name:
+          - apache2
+          - php
+          - libapache2-mod-php
+        state: latest
+
+    - name: Copy index.php to web directory
+      copy:
+        src: ./playbook_dynamic.yml/index.php
+        dest: /var/www/html/index.php

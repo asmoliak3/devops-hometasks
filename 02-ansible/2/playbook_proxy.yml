@@ -1,0 +1,18 @@
+---
+- hosts: nginx_proxy
+  become: yes
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: latest
+
+    - name: Configure Nginx for reverse proxy
+      template:
+        src: ./playbook_proxy.yml/nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted

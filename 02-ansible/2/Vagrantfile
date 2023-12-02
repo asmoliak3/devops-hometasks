@@ -1,0 +1,31 @@
+Vagrant.configure("2") do |config|
+
+    # Machine for static website
+    config.vm.define "static_site" do |static_site|
+      static_site.vm.box = "ubuntu/bionic64"
+      static_site.vm.network "private_network", ip: "192.168.56.1"
+      static_site.vm.provision "ansible" do |ansible|
+        ansible.playbook = "2/playbook_static.yml"
+      end
+    end
+  
+    # Machine for dynamic website
+    config.vm.define "dynamic_site" do |dynamic_site|
+      dynamic_site.vm.box = "ubuntu/bionic64"
+      dynamic_site.vm.network "private_network", ip: "192.168.56.2"
+      dynamic_site.vm.provision "ansible" do |ansible|
+        ansible.playbook = "2/playbook_dynamic.yml"
+      end
+    end
+  
+    # Machine for nginx reverse proxy
+    config.vm.define "nginx_proxy" do |proxy|
+      proxy.vm.box = "ubuntu/bionic64"
+      proxy.vm.network "private_network", ip: "192.168.56.3"
+      proxy.vm.provision "ansible" do |ansible|
+        ansible.playbook = "2/playbook_proxy.yml"
+      end
+    end
+  
+  end
+  
